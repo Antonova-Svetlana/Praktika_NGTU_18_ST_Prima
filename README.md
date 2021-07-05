@@ -18,10 +18,8 @@
 
 Пример показывающий, как трансилорвать информацию нескольким клиентам по локальной сети.
 
-![sender in work] (https://doc.qt.io/qt-5/images/broadcastsender-example.png)
+**`![sender pic]([https://doc.qt.io/qt-5/images/broadcastsender-example.png](https://doc.qt.io/qt-5/images/broadcastsender-example.png))`**
 
 ## Broadcast Receiver
 
 Демонстрация, получения сообщений, транслируемых по локальной сети с использованием Qt Network API.
-
-
