@@ -69,7 +69,7 @@ private slots:
     void processPendingDatagrams();
 
 private:
-    QLabel *statusLabel = nullptr;
+    QLabel *statusLabel, *srcPort = nullptr;
     QUdpSocket *udpSocket = nullptr;
 };
 
