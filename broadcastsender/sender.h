@@ -53,6 +53,10 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QListView>
+
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -70,12 +74,17 @@ public:
 private slots:
     void startBroadcasting();
     void broadcastDatagram();
+    void getIP();
 
 private:
-    QLabel *statusLabel = nullptr;
-    QPushButton *startButton = nullptr;
+    QLineEdit *inputIP = nullptr;
+    QLabel *statusLabel, *statusIP = nullptr;
+    QPushButton *startButton, *textIP = nullptr;
     QUdpSocket *udpSocket = nullptr;
+    QComboBox *comboBox;
+    QListView *listView; // указатель на список элементов
     QTimer timer;
+    QString setIP;
     int messageNo = 1;
 };
 

@@ -57,7 +57,7 @@ Receiver::Receiver(QWidget *parent)
     : QWidget(parent)
 {
     statusLabel = new QLabel(tr("Listening for broadcasted messages"));
-    statusLabel->setWordWrap(true);
+    srcPort = new QLabel(tr("Source port: "));
 
     auto quitButton = new QPushButton(tr("&Quit"));
 
@@ -67,8 +67,7 @@ Receiver::Receiver(QWidget *parent)
 //! [0]
 
 //! [1]
-    connect(udpSocket, SIGNAL(readyRead()),
-            this, SLOT(processPendingDatagrams()));
+    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
 //! [1]
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
@@ -79,21 +78,24 @@ Receiver::Receiver(QWidget *parent)
 
     auto mainLayout = new QVBoxLayout;
     mainLayout->addWidget(statusLabel);
+    mainLayout->addWidget(srcPort);
     mainLayout->addLayout(buttonLayout);
     setLayout(mainLayout);
 
     setWindowTitle(tr("Broadcast Receiver"));
 }
 
+
 void Receiver::processPendingDatagrams()
 {
     QByteArray datagram;
+    quint16 senderport;
 //! [2]
     while (udpSocket->hasPendingDatagrams()) {
         datagram.resize(int(udpSocket->pendingDatagramSize()));
-        udpSocket->readDatagram(datagram.data(), datagram.size());
-        statusLabel->setText(tr("Received datagram: \"%1\"")
-                             .arg(datagram.constData()));
+        udpSocket->readDatagram(datagram.data(), datagram.size(), nullptr, &senderport);
+        statusLabel->setText(tr("Received datagram: \"%1\"") .arg(datagram.constData()));
+        srcPort->setText(tr("Source port: \"%1\"") .arg(senderport));
     }
 //! [2]
 }
