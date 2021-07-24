@@ -61,14 +61,10 @@ Receiver::Receiver(QWidget *parent)
 
     auto quitButton = new QPushButton(tr("&Quit"));
 
-//! [0]
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(45454, QUdpSocket::ShareAddress);
-//! [0]
 
-//! [1]
     connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
-//! [1]
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
     auto buttonLayout = new QHBoxLayout;
@@ -85,17 +81,14 @@ Receiver::Receiver(QWidget *parent)
     setWindowTitle(tr("Broadcast Receiver"));
 }
 
-
 void Receiver::processPendingDatagrams()
 {
     QByteArray datagram;
     quint16 senderport;
-//! [2]
     while (udpSocket->hasPendingDatagrams()) {
         datagram.resize(int(udpSocket->pendingDatagramSize()));
         udpSocket->readDatagram(datagram.data(), datagram.size(), nullptr, &senderport);
         statusLabel->setText(tr("Received datagram: \"%1\"") .arg(datagram.constData()));
         srcPort->setText(tr("Source port: \"%1\"") .arg(senderport));
     }
-//! [2]
 }
