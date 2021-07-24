@@ -82,7 +82,6 @@ private:
     QPushButton *startButton, *textIP = nullptr;
     QUdpSocket *udpSocket = nullptr;
     QComboBox *comboBox;
-    QListView *listView; // указатель на список элементов
     QTimer timer;
     QString setIP;
     int messageNo = 1;
