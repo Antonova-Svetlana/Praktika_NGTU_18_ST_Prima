@@ -99,7 +99,7 @@ Sender::Sender(QWidget *parent)
         }
     }
 
-    inputIP->setText(comboBox->currentText());
+    setIP = comboBox->currentText();
     setWindowTitle(tr("Broadcast Sender"));
 }
 
