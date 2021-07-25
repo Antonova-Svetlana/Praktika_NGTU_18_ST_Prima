@@ -51,6 +51,7 @@
 #include <QtWidgets>
 #include <QtNetwork>
 #include <QtCore>
+#include <QDateTime>
 
 #include "sender.h"
 
@@ -110,11 +111,36 @@ void Sender::getIP()
 
 void Sender::startBroadcasting()
 {
-    timer.start(1000);
+    timer.start(10000);
 }
 
 void Sender::broadcastDatagram()
 {
+    QString ntpServer = "0.ru.pool.ntp.org";
+    QByteArray dataNtpServer;
+    QHostInfo info = QHostInfo::fromName(ntpServer);
+    udpSocket->connectToHost(QHostAddress(info.addresses().at(0)), 123);
+    char message[48]= {010, 0, 0, 0, 0, 0, 0, 0, 0};
+
+    if(udpSocket->writeDatagram(message, sizeof(message), QHostAddress(info.addresses().at(0)), 123)){
+        if (udpSocket->waitForReadyRead()){
+            while (udpSocket->hasPendingDatagrams()){
+                QByteArray QBABufferIn = udpSocket->readAll();
+                //udpSocket->readDatagram(dataNtpServer.data(), dataNtpServer.size());
+                if (QBABufferIn.size()== 48){
+                    int count= 40;
+                    long long timestamp = QDateTime::currentSecsSinceEpoch();
+                    qDebug() << "GidGood";
+                    //qDebug() << uchar(QBABufferIn.at(count))+ (uchar(QBABufferIn.at(count+ 1)) << 8)+ (uchar(QBABufferIn.at(count+ 2)) << 16)+ (uchar(QBABufferIn.at(count+ 3)) << 24);
+                    long long DateTimeIn= uchar(QBABufferIn.at(count))+ (uchar(QBABufferIn.at(count+ 1)) << 8)+ (uchar(QBABufferIn.at(count+ 2)) << 16)+ (uchar(QBABufferIn.at(count+ 3)) << 24);
+                    qDebug() << DateTimeIn;
+                    //long tmit = ntohl((time_t)DateTimeIn);
+                    //tmit-= 2208988800U;
+                    //QDateTime dateTime= QDateTime::fromTime_t(tmit);
+                }
+            }
+        }
+    }
     statusLabel->setText(tr("Now broadcasting datagram %1").arg(messageNo));
     QByteArray datagram = "Broadcast message " + QByteArray::number(messageNo);
     udpSocket->writeDatagram(datagram, QHostAddress(setIP), 45454);
